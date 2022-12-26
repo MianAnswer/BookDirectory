@@ -1,9 +1,13 @@
-#API Docs
+# API Docs
 
-##Endpoints
-- `GET` List of books - /Books
-- `GET` Specific book - /Books/id:
-- `POST` Add a book - /Books
-- `PUT` Update a book - /Books/id:
-- `DELETE` Delete a book - /Books/id:
-- `DELETE` Delete all books - /Books
+## Endpoints
+
+### '/Books'
+- `GET` List of books
+- `POST` Add a book
+- `DELETE` Delete all books
+
+### '/Books/id:'
+- `GET` Specific book
+- `PUT` Update a book
+- `DELETE` Delete a book

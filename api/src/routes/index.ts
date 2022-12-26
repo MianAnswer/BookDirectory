@@ -3,10 +3,12 @@ import booksRouter from '../books/routes'
 
 const router = Router()
 
-router.get('/', (req, res) => {
+// redirect '/' to '/books'
+router.all('/', (req, res) => {
   res.redirect('books')
 })
 
+// use routes set for '/books'
 router.use('/books', booksRouter)
 
 export default router
