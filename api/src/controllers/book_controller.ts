@@ -1,11 +1,19 @@
 import { Request, Response } from 'express'
+import Books from '../models/book'
 
 const getBooks = (req: Request, res: Response) => {
   res.send('List of books')
 }
 
-const addBook = (req: Request, res: Response) => {
-  res.send('Add a books')
+const addBook = async (req: Request, res: Response) => {
+  const book = await Books.create({
+    title: 'Harry Potter and the Sorcerer\'s Stone',
+    author: 'J.K. Rowling',
+    year: 1998,
+  })
+
+  await book.save()
+  res.send('Add a book')
 }
 
 const deleteBooks = (req: Request, res: Response) => {
