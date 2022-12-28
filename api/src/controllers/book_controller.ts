@@ -1,19 +1,27 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import Books from '../models/book'
 
 const getBooks = (req: Request, res: Response) => {
   res.send('List of books')
 }
 
-const addBook = async (req: Request, res: Response) => {
-  const book = await Books.create({
-    title: 'Harry Potter and the Sorcerer\'s Stone',
-    author: 'J.K. Rowling',
-    year: 1998,
-  })
+const addBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { body } = req
+    const foundBook = await Books.findOne({ title: body.title.toLowerCase() })
 
-  await book.save()
-  res.send('Add a book')
+    if (!foundBook) {
+      const book = await Books.create(body)
+      await book.save()
+      res
+        .status(201)
+        .send('Add a book')
+    } else {
+      res.send('Book already exists')
+    }
+  } catch (error) {
+    next(error)
+  }
 }
 
 const deleteBooks = (req: Request, res: Response) => {
@@ -32,12 +40,20 @@ const deleteBook = (req: Request, res: Response) => {
   res.send('Delete book')
 }
 
-const errorHandler = (req: Request, res: Response) => {
+const unacceptedMethodHandler = (req: Request, res: Response) => {
   res
     .status(405)
     .setHeader('Accept', 'GET,POST,DELETE')
 
   res.send('ERROR')
+}
+
+const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err) {
+    res.send(err.message)
+  } else {
+    next()
+  }
 }
 
 export default {
@@ -47,5 +63,6 @@ export default {
   getBook,
   updateBook,
   deleteBook,
+  unacceptedMethodHandler,
   errorHandler,
 }
