@@ -52,8 +52,18 @@ const updateBook = (req: Request, res: Response) => {
   res.send('Update a book')
 }
 
-const deleteBook = (req: Request, res: Response) => {
-  res.send('Delete book')
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const { deletedCount } = await Books.deleteOne({ _id: id })
+    if (deletedCount > 0) {
+      res.send('Deleted book')
+    } else {
+      res.send('Book not found')
+    }
+  } catch (error) {
+    next(error)
+  }
 }
 
 const unacceptedMethodHandler = (req: Request, res: Response) => {
