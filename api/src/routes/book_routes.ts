@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import handler from '../controllers/book_controller'
-import bookValidator from '../middlewares/bookValidator'
+import validator from '../middlewares/bookValidator'
+
+const { bookValidator, idValidator } = validator
 
 const {
   getBooks,
@@ -23,6 +25,7 @@ booksRouter.route('/')
   .all(errorHandler)
 
 booksRouter.route('/:id')
+  .all(idValidator)
   .get(getBook)
   .put(updateBook)
   .delete(deleteBook)

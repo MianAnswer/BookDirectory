@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
+import { isValidObjectId } from 'mongoose'
 
 const bookValidator = (req: Request, res: Response, next: NextFunction) => {
   const { body } = req
@@ -24,4 +25,13 @@ const bookValidator = (req: Request, res: Response, next: NextFunction) => {
   next()
 }
 
-export default bookValidator
+const idValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  if (isValidObjectId(id)) {
+    next()
+  } else {
+    res.send('Invalid Id')
+  }
+}
+
+export default { bookValidator, idValidator }

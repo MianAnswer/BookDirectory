@@ -38,8 +38,14 @@ const deleteBooks = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-const getBook = (req: Request, res: Response) => {
-  res.send('A book')
+const getBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const foundBook = await Books.findById(id).select(['title', 'author', 'year'])
+    res.send(foundBook || 'Book not found')
+  } catch (error) {
+    next(error)
+  }
 }
 
 const updateBook = (req: Request, res: Response) => {
