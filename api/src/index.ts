@@ -4,10 +4,10 @@ import mongoose from 'mongoose'
 import router from './routes'
 
 if (process.env.NODE_ENV !== 'production') { dotenv.config() }
-console.log(process.env.NODE_ENV)
 
 const app = express()
 
+app.use(express.urlencoded({ extended: true }))
 app.use(router)
 
 const port = process.env.PORT || 3000
