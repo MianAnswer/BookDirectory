@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import Books from '../models/book'
 
-const getBooks = (req: Request, res: Response) => {
-  res.send('List of books')
+const getBooks = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const listOfBooks = await Books.find().select(['title', 'author', 'year'])
+    res.send(listOfBooks || 'Books are empty')
+  } catch (error) {
+    next(error)
+  }
 }
 
 const addBook = async (req: Request, res: Response, next: NextFunction) => {
