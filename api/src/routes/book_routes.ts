@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import handler from '../controllers/book_controller'
+import bookValidator from '../middlewares/bookValidator'
 
 const {
   getBooks,
@@ -8,6 +9,7 @@ const {
   getBook,
   updateBook,
   deleteBook,
+  unacceptedMethodHandler,
   errorHandler,
 } = handler
 
@@ -15,8 +17,9 @@ const booksRouter = Router()
 
 booksRouter.route('/')
   .get(getBooks)
-  .post(addBook)
+  .post(bookValidator, addBook)
   .delete(deleteBooks)
+  .all(unacceptedMethodHandler)
   .all(errorHandler)
 
 booksRouter.route('/:id')
