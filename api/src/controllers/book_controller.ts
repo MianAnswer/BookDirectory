@@ -29,8 +29,13 @@ const addBook = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-const deleteBooks = (req: Request, res: Response) => {
-  res.send('Delete books')
+const deleteBooks = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await Books.deleteMany()
+    res.send('Deleted all books')
+  } catch (error) {
+    next(error)
+  }
 }
 
 const getBook = (req: Request, res: Response) => {
