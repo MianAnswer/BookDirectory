@@ -48,8 +48,24 @@ const getBook = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-const updateBook = (req: Request, res: Response) => {
-  res.send('Update a book')
+const updateBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const { body } = req
+
+    const foundBook = await Books.findByIdAndUpdate(id, body)
+    if (!foundBook) {
+      res
+        .status(404)
+        .send('Book not found')
+    } else {
+      res
+        .status(201)
+        .send('Book updated')
+    }
+  } catch (error) {
+    next(error)
+  }
 }
 
 const deleteBook = async (req: Request, res: Response, next: NextFunction) => {

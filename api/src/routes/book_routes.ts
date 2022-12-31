@@ -21,13 +21,14 @@ booksRouter.route('/')
   .get(getBooks)
   .post(bookValidator, addBook)
   .delete(deleteBooks)
-  .all(unacceptedMethodHandler)
-  .all(errorHandler)
 
 booksRouter.route('/:id')
   .all(idValidator)
   .get(getBook)
-  .put(updateBook)
+  .put(bookValidator, updateBook)
   .delete(deleteBook)
+
+booksRouter.use(unacceptedMethodHandler)
+booksRouter.use(errorHandler)
 
 export default booksRouter
