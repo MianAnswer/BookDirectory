@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import Books from '../models/book'
 
-const getBooks = (req: Request, res: Response) => {
-  res.send('List of books')
+const getBooks = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const listOfBooks = await Books.find().select(['title', 'author', 'year'])
+    res.send(listOfBooks || 'Books are empty')
+  } catch (error) {
+    next(error)
+  }
 }
 
 const addBook = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,20 +29,57 @@ const addBook = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-const deleteBooks = (req: Request, res: Response) => {
-  res.send('Delete books')
+const deleteBooks = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await Books.deleteMany()
+    res.send('Deleted all books')
+  } catch (error) {
+    next(error)
+  }
 }
 
-const getBook = (req: Request, res: Response) => {
-  res.send('A book')
+const getBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const foundBook = await Books.findById(id).select(['title', 'author', 'year'])
+    res.send(foundBook || 'Book not found')
+  } catch (error) {
+    next(error)
+  }
 }
 
-const updateBook = (req: Request, res: Response) => {
-  res.send('Update a book')
+const updateBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const { body } = req
+
+    const foundBook = await Books.findByIdAndUpdate(id, body)
+    if (!foundBook) {
+      res
+        .status(404)
+        .send('Book not found')
+    } else {
+      res
+        .status(201)
+        .send('Book updated')
+    }
+  } catch (error) {
+    next(error)
+  }
 }
 
-const deleteBook = (req: Request, res: Response) => {
-  res.send('Delete book')
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const { deletedCount } = await Books.deleteOne({ _id: id })
+    if (deletedCount > 0) {
+      res.send('Deleted book')
+    } else {
+      res.send('Book not found')
+    }
+  } catch (error) {
+    next(error)
+  }
 }
 
 const unacceptedMethodHandler = (req: Request, res: Response) => {
